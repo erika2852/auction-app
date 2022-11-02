@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatController {
     @Autowired
     private KafkaTemplate<String, Message> kafkaTemplate;
-
     @PostMapping(value = "/publish")
     public void sendMessage(@RequestBody Message message) {
         log.info("Produce message : " + message.toString());
@@ -34,10 +33,35 @@ public class ChatController {
         }
     }
 
+    @PostMapping(value = "/publish2")
+    public void Test(String message)
+    {
+        GetBrokerConfig g1 = new GetBrokerConfig();
+        log.info("topic name : " + message);
+        try {
+            g1.createTopics(message);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping(value = "/publish3")
+    public void Test2(String message)
+    {
+        GetBrokerConfig g1 = new GetBrokerConfig();
+        log.info("topic name : " + message);
+        try {
+            g1.removeTopics(message);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @MessageMapping("/sendMessage")
     @SendTo("/topic/group")
     public Message broadcastGroupMessage(@Payload Message message) {
         return message;
     }
 
+    
 }
